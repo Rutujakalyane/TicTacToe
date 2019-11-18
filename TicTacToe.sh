@@ -1,8 +1,8 @@
 #!/bin/bash -x
 
 #Author-Prince Singh
-#Date-16 Nov 2019
-#Purpose-Use case 2 [Assigning number X or 0 to player]
+#Date-18 Nov 2019
+#Purpose-Use case 3 [ Toss between Player & Computer]
 
 echo "Welcome to TicTacToe"
 
@@ -30,13 +30,24 @@ function resetBoard()
 function assigningSymbol(){
    if [ $(( RANDOM%2 )) -eq 1 ]
    then
-   PLAYER_SYM=SYMBOL_1
-   COMP_SYM=SYMBOL_2
+      PLAYER_SYM=SYMBOL_1
+      COMP_SYM=SYMBOL_2
    else
-   COMP_SYM=SYMBOL_1
-   PLAYER_SYM=SYMBOL_2
+      COMP_SYM=SYMBOL_1
+      PLAYER_SYM=SYMBOL_2
+   fi
+}
+
+function toss(){
+   if [ $(( RANDOM%2 )) -eq 1 ]
+   then
+      echo "Player's turn" 
+   else
+      echo "Computer's turn"
    fi
 }
 
 resetBoard
 assigningSymbol
+toss
+
