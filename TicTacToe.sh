@@ -9,9 +9,9 @@ echo "Welcome to TicTacToe"
 #constants
 NUM_OFROWS=3
 NUM_OFCOLUMNS=3
-EMPTY=-1
-SYMBOL_1=x
-SYMBOL_2=0
+EMPTY=0
+PLAYER_SYM=' '
+COMP_SYM=' '
 
 #variables
 declare -a board
@@ -22,7 +22,7 @@ function resetBoard()
    do
       for ((j=0; j<NUM_OFCOLUMNS; j++))
       do
-         board[$i,$j]=EMPTY
+         board[$i,$j]=$EMPTY
       done
    done
 }
@@ -30,12 +30,13 @@ function resetBoard()
 function assigningSymbol(){
    if [ $(( RANDOM%2 )) -eq 1 ]
    then
-      PLAYER_SYM=SYMBOL_1
-      COMP_SYM=SYMBOL_2
+      PLAYER_SYM=X
+      COMP_SYM=O
    else
-      COMP_SYM=SYMBOL_1
-      PLAYER_SYM=SYMBOL_2
+      COMP_SYM=X
+      PLAYER_SYM=O
    fi
+   echo "Player's Symbol - $PLAYER_SYM"
 }
 
 function toss()
@@ -56,8 +57,7 @@ function displayBoard()
       do
          echo -n "| ${board[$i,$j]} |"
       done
-	 printf "\n"
-	 echo "---------------------------"
+	 printf "\n\n"
    done
 
 
