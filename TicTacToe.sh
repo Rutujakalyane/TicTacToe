@@ -14,6 +14,7 @@ PLAYER_SYM=' '
 COMP_SYM=' '
 
 #variables
+cell=1
 declare -a board
 
 function resetBoard()
@@ -55,6 +56,8 @@ function displayBoard()
    do
       for ((j=0; j<NUM_OFCOLUMNS; j++))
       do
+         board[$i,$j]=$cell
+         ((cell++))
          echo -n "| ${board[$i,$j]} |"
       done
 	 printf "\n\n"
