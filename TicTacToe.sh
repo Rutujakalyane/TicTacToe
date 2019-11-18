@@ -2,7 +2,7 @@
 
 #Author-Prince Singh
 #Date-18 Nov 2019
-#Purpose-Use case 3 [ Toss between Player & Computer]
+#Purpose-Use case 4 [ Display Board ]
 
 echo "Welcome to TicTacToe"
 
@@ -38,7 +38,8 @@ function assigningSymbol(){
    fi
 }
 
-function toss(){
+function toss()
+{
    if [ $(( RANDOM%2 )) -eq 1 ]
    then
       echo "Player's turn" 
@@ -47,7 +48,23 @@ function toss(){
    fi
 }
 
+function displayBoard()
+{
+   for ((i=0; i<NUM_OFROWS; i++))
+   do
+      for ((j=0; j<NUM_OFCOLUMNS; j++))
+      do
+         echo -n "| ${board[$i,$j]} |"
+      done
+	 printf "\n"
+	 echo "---------------------------"
+   done
+
+
+}
+
 resetBoard
 assigningSymbol
 toss
-
+echo
+displayBoard
