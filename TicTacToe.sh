@@ -12,15 +12,20 @@ NUM_OFCOLUMNS=3
 EMPTY=0
 PLAYER_SYM=''
 COMP_SYM=''
+LENGTH=$(( $NUM_OFROWS * $NUM_OFCOLUMNS ))
 
 #variables
 cell=1
 playerCell=''
 
 declare -A board
+declare -A exist
 
 function resetBoard()
-{
+{  
+   local i=0
+   local j=0
+
    for ((i=0; i<NUM_OFROWS; i++))
    do
       for ((j=0; j<NUM_OFCOLUMNS; j++))
@@ -42,7 +47,8 @@ function initializeBoard()
    done
 }
 
-function assigningSymbol(){
+function assigningSymbol()
+{
    if [ $(( RANDOM%2 )) -eq 1 ]
    then
       PLAYER_SYM=X
@@ -66,11 +72,13 @@ function toss()
 
 function displayBoard()
 {
+   local i=0
+   local j=0
    for (( i=0; i<NUM_OFROWS; i++ ))
    do
       for (( j=0; j<NUM_OFCOLUMNS; j++ ))
       do
-         echo -n "| ${board[$i,$j]} |"
+         echo -n "|   ${board[$i,$j]}   |"
       done
 	 printf "\n\n"
    done
@@ -78,26 +86,53 @@ function displayBoard()
 
 function inputToBoard()
 {
-   initializeBoard
-   displayBoard
-   read  -p "Choose one cell for input:" playerCell
-   echo "Player Choosen cell $playerCell"
+  local rowIndex=''
+  local columnIndex=''
 
-   for (( row=0; row<NUM_OFROWS; row++ ))
-   do
-      for (( col=0; col<NUM_OFCOLUMNS; col++ ))
-      do
-         if [ ${board[$row,$col]} -eq $playerCell ]
-         then
-         board[$row,$col]=$PLAYER_SYM
-         fi
-     done
-   done
-   displayBoard
+  for (( i=0; i<$LENGTH; i++))
+  do
+  displayBoard
+  read  -p "Choose one cell for input : " playerCell
+  
+  if [ $playerCell -gt $LENGTH ]
+  then
+     echo "Invalid move, Select valid cell"
+     printf "\n"
+     ((i--))
+  else
+  rowIndex=$(( $playerCell / $NUM_OFROWS ))
+     if [ $(( $playerCell % $NUM_OFROWS )) -eq 0 ]
+     then
+        rowIndex=$(( $rowIndex - 1 ))
+     fi
+ 
+  columnIndex=$(( $playerCell %  $NUM_OFCOLUMNS ))
+     if [ $columnIndex -eq 0 ]
+     then
+        columnIndex=$(( $columnIndex + 2 ))
+     else
+        columnIndex=$(( $columnIndex - 1 ))
+     fi
+
+     if [ "${board[$rowIndex,$columnIndex]}" == "$PLAYER_SYM" ] || [ "${board[$rowIndex,$columnIndex]}" == "$COMP_SYM" ]
+     then
+        echo "Invalid move, Cell already filled"
+        printf "\n"
+        ((i--))
+     fi
+     
+     board[$rowIndex,$columnIndex]=$PLAYER_SYM
+  fi
+  done
 }
 
-resetBoard
+#main
+
+
+#resetBoard
 assigningSymbol
 toss
 echo
+initializeBoard
 inputToBoard
+displayBoard 
