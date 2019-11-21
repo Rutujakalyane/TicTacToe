@@ -1,7 +1,7 @@
 #!/bin/bash -x
 
 #Author-Prince Singh
-#Date-19 Nov 2019
+#Date-20 Nov 2019
 #Purpose-Use case 7 [ Computer moves & Checking winning cells for user ]
 
 echo "Welcome to TicTacToe"
@@ -131,7 +131,7 @@ function inputToBoard()
                   board[$rowIndex,$columnIndex]=$PLAYER_SYM
                   playerTurn=0
 
-                  if [ $(checkPlayerResult) -eq 1  ]
+                  if [ $(checkWinner $PLAYER_SYM) -eq 1  ]
                   then
                      echo "You Won"
                      return 0
@@ -142,35 +142,42 @@ function inputToBoard()
          echo "#### Computer's Turn ######"
          computerTurn
          playerTurn=1
+         if [ $(checkWinner $COMP_SYM) -eq 1  ]
+         then
+            echo "Computer Won"
+            return 0
+         fi
       fi
    done
    echo "Match Tie"
 }
 
-function checkPlayerResult()
-{
-   if [ ${board[0,0]} == $PLAYER_SYM ] && [ ${board[0,1]} == $PLAYER_SYM ] && [ ${board[0,2]} == $PLAYER_SYM ]
+function checkWinner()
+{  
+   symbol=$1
+
+   if [ ${board[0,0]} == $symbol ] && [ ${board[0,1]} == $symbol ] && [ ${board[0,2]} == $symbol ]
    then
       echo 1
-   elif [ ${board[1,0]} == $PLAYER_SYM ] && [ ${board[1,1]} == $PLAYER_SYM ] && [ ${board[1,2]} == $PLAYER_SYM ]
+   elif [ ${board[1,0]} == $symbol ] && [ ${board[1,1]} == $symbol ] && [ ${board[1,2]} == $symbol ]
    then
       echo 1
-   elif [ ${board[2,0]} == $PLAYER_SYM ] && [ ${board[2,1]} == $PLAYER_SYM ] && [ ${board[2,2]} == $PLAYER_SYM ]
+   elif [ ${board[2,0]} == $symbol ] && [ ${board[2,1]} == $symbol ] && [ ${board[2,2]} == $symbol ]
    then
       echo 1
-   elif [ ${board[0,0]} == $PLAYER_SYM ] && [ ${board[1,0]} == $PLAYER_SYM ] && [ ${board[2,0]} == $PLAYER_SYM ]
+   elif [ ${board[0,0]} == $symbol ] && [ ${board[1,0]} == $symbol ] && [ ${board[2,0]} == $symbol ]
    then
       echo 1
-   elif [ ${board[0,1]} == $PLAYER_SYM ] && [ ${board[1,1]} == $PLAYER_SYM ] && [ ${board[2,1]} == $PLAYER_SYM ]
+   elif [ ${board[0,1]} == $symbol ] && [ ${board[1,1]} == $symbol ] && [ ${board[2,1]} == $symbol ]
    then
       echo 1
-   elif [ ${board[0,2]} == $PLAYER_SYM ] && [ ${board[1,2]} == $PLAYER_SYM ] && [ ${board[2,2]} == $PLAYER_SYM ]
+   elif [ ${board[0,2]} == $symbol ] && [ ${board[1,2]} == $symbol ] && [ ${board[2,2]} == $symbol ]
    then
       echo 1
-   elif [ ${board[0,0]} == $PLAYER_SYM ] && [ ${board[1,1]} == $PLAYER_SYM ] && [ ${board[2,2]} == $PLAYER_SYM ]
+   elif [ ${board[0,0]} == $symbol ] && [ ${board[1,1]} == $symbol ] && [ ${board[2,2]} == $symbol ]
    then
       echo 1
-   elif [ ${board[2,0]} == $PLAYER_SYM ] && [ ${board[1,1]} == $PLAYER_SYM ] && [ ${board[0,2]} == $PLAYER_SYM ]
+   elif [ ${board[2,0]} == $symbol ] && [ ${board[1,1]} == $symbol ] && [ ${board[0,2]} == $symbol ]
    then
       echo 1
    else
@@ -249,36 +256,42 @@ function  computerTurn(){
          if [ ${board[$(($row+2)),$(($col+2))]} != $COMP_SYM ]
          then
             board[$(($row+2)),$(($col+2))]=$COMP_SYM
+            return
          fi
       elif [ ${board[$(($row+1)),$(($col+1))]} == $PLAYER_SYM ] && [ ${board[$(($row+2)),$(($col+2))]} == $PLAYER_SYM ]
       then
          if [ ${board[$row,$col]} != $COMP_SYM ]
          then
             board[$row,$col]=$COMP_SYM
+            return
           fi
       elif [ ${board[$row,$col]} == $PLAYER_SYM ] && [ ${board[$(($row+2)),$(($col+2))]} == $PLAYER_SYM ]
       then
          if [ ${board[$(($row+1)),$(($col+1))]} != $COMP_SYM ]
          then
             board[$(($row+1)),$(($col+1))]=$COMP_SYM
+            return
           fi
       elif [ ${board[$(($row+2)),$col]} == $PLAYER_SYM ] &&  [ ${board[$(($row+1)),$(($col+1))]} == $PLAYER_SYM ]
       then
          if [ ${board[$row,$(($col+2))]} != $COMP_SYM ]
          then
             board[$row,$(($col+2))]=$COMP_SYM
+            return
           fi
       elif [ ${board[$(($row+1)),$(($col+1))]} == $PLAYER_SYM ] && [ ${board[$row,$(($col+2))]} == $PLAYER_SYM ]
       then
          if [ ${board[$(($row+2)),$col]} != $COMP_SYM ]
          then
             board[$(($row+2)),$col]=$COMP_SYM
+            return
           fi
       elif [ ${board[$(($row+2)),$col]} == $PLAYER_SYM ] && [ ${board[$row,$(($col+2))]} == $PLAYER_SYM ]
       then
          if [ ${board[$(($row+1)),$(($col+1))]} != $COMP_SYM ]
          then
             board[$(($row+1)),$(($col+1))]=$COMP_SYM
+            return
           fi
       else
          while [ true ]
