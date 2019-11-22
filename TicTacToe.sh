@@ -2,7 +2,7 @@
 
 #Author-Prince Singh
 #Date-20 Nov 2019
-#Purpose-Use case 7 [ Computer moves & Checking winning cells for user ]
+#Purpose-Use case 8 [ Checking winning cells for computer ]
 
 echo "Welcome to TicTacToe"
 
@@ -140,6 +140,7 @@ function inputToBoard()
             fi
       else
          echo "#### Computer's Turn ######"
+         checkForCompWin
          computerTurn
          playerTurn=1
          if [ $(checkWinner $COMP_SYM) -eq 1  ]
@@ -153,7 +154,7 @@ function inputToBoard()
 }
 
 function checkWinner()
-{  
+{
    symbol=$1
 
    if [ ${board[0,0]} == $symbol ] && [ ${board[0,1]} == $symbol ] && [ ${board[0,2]} == $symbol ]
@@ -185,12 +186,14 @@ function checkWinner()
    fi
 }
 
-function  computerTurn(){
-#Rows---------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+function  computerTurn()
+{
+#Rows--------------------------------------------------------------------------------------------------------------------------------------------->
+
    local row=0
    local col=0
    for ((row=0; row<NUM_OFROWS; row++))
-   do 
+   do
       if [ ${board[$row,$col]} == $PLAYER_SYM ] && [ ${board[$(($row)),$(($col+1))]} == $PLAYER_SYM ]
       then
           if [ ${board[$row,$(($col+2))]} != $COMP_SYM ]
@@ -215,7 +218,7 @@ function  computerTurn(){
       fi
    done
 
-#Columns-------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+#Columns------------------------------------------------------------------------------------------------------------------------------------------->
 
    local row=0
    local col=0
@@ -245,7 +248,7 @@ function  computerTurn(){
       fi
    done
 
-#Diagonal------------------------------------------------------------------------------------------------------------------------------------------------------------------>
+#Diagonal----------------------------------------------------------------------------------------------------------------------------------------->
 
       local row=0
       local col=0
@@ -310,9 +313,123 @@ function  computerTurn(){
       fi
 }
 
+function checkForCompWin()
+{
+#Rows---------------------------------------------------------------------------------------------------------------------------------------------->
+
+   local row=0
+   local col=0
+   for ((row=0; row<NUM_OFROWS; row++))
+   do
+      if [ ${board[$row,$col]} == $COMP_SYM ] && [ ${board[$(($row)),$(($col+1))]} == $COMP_SYM ]
+      then
+         if [ ${board[$row,$(($col+2))]} != $PLAYER_SYM ]
+          then
+             board[$row,$(($col+2))]=$COMP_SYM
+             break
+          fi
+      elif [ ${board[$row,$(($col+1))]} == $COMP_SYM ] && [ ${board[$row,$(($col+2))]} == $COMP_SYM ]
+      then
+          if [ ${board[$row,$col]} != $PLAYER_SYM ]
+          then
+             board[$row,$col]=$COMP_SYM
+             break
+          fi
+      elif [ ${board[$row,$col]} == $COMP_SYM ] && [ ${board[$row,$(($col+2))]} == $COMP_SYM ]
+      then
+          if [ ${board[$row,$(($col+1))]} != $PLAYER_SYM ]
+          then
+             board[$row,$(($col+1))]=$COMP_SYM
+             break
+          fi
+      fi
+   done
+
+#Columns------------------------------------------------------------------------------------------------------------------------------------------->
+
+   local row=0
+   local col=0
+   for ((col=0; col<NUM_OFCOLUMNS; col++))
+   do
+      if [ ${board[$row,$col]} == $COMP_SYM ] &&  [ ${board[$(($row+1)),$col]} == $COMP_SYM ]
+      then
+         if [ ${board[$(($row+2)),$col]} != $PLAYER_SYM ]
+         then
+            board[$(($row+2)),$col]=$COMP_SYM
+            break
+         fi
+      elif [ ${board[$(($row+1)),$col]} == $COMP_SYM ] && [ ${board[$(($row+2)),$col]} == $COMP_SYM ]
+      then
+         if [ ${board[$row,$col]} != $PLAYER_SYM ]
+         then
+            board[$row,$col]=$COMP_SYM
+            break
+          fi
+      elif [ ${board[$row,$col]} == $COMP_SYM ] && [ ${board[$(($row+2)),$col]} == $COMP_SYM ]
+      then
+         if [ ${board[$(($row+1)),$col]} != $PLAYER_SYM ]
+         then
+            board[$(($row+1)),$col]=$COMP_SYM
+            break
+         fi
+      fi
+   done
+
+#Diagonal------------------------------------------------------------------------------------------------------------------------------------------>
+
+      local row=0
+      local col=0
+      local valid=''
+
+      if [ ${board[$row,$col]} == $COMP_SYM ] &&  [ ${board[$(($row+1)),$(($col+1))]} == $COMP_SYM ]
+      then
+         if [ ${board[$(($row+2)),$(($col+2))]} != $PLAYER_SYM ]
+         then
+            board[$(($row+2)),$(($col+2))]=$COMP_SYM
+            return
+         fi
+      elif [ ${board[$(($row+1)),$(($col+1))]} == $COMP_SYM ] && [ ${board[$(($row+2)),$(($col+2))]} == $COMP_SYM ]
+      then
+         if [ ${board[$row,$col]} != $PLAYER_SYM ]
+         then
+            board[$row,$col]=$COMP_SYM
+            return
+          fi
+      elif [ ${board[$row,$col]} == $COMP_SYM ] && [ ${board[$(($row+2)),$(($col+2))]} == $COMP_SYM ]
+      then
+         if [ ${board[$(($row+1)),$(($col+1))]} != $PLAYER_SYM ]
+         then
+            board[$(($row+1)),$(($col+1))]=$COMP_SYM
+            return
+          fi
+      elif [ ${board[$(($row+2)),$col]} == $COMP_SYM ] &&  [ ${board[$(($row+1)),$(($col+1))]} == $COMP_SYM ]
+      then
+         if [ ${board[$row,$(($col+2))]} != $PLAYER_SYM ]
+         then
+            board[$row,$(($col+2))]=$COMP_SYM
+            return
+          fi
+      elif [ ${board[$(($row+1)),$(($col+1))]} == $COMP_SYM ] && [ ${board[$row,$(($col+2))]} == $COMP_SYM ]
+      then
+         if [ ${board[$(($row+2)),$col]} != $PLAYER_SYM ]
+         then
+            board[$(($row+2)),$col]=$COMP_SYM
+            return
+          fi
+      elif [ ${board[$(($row+2)),$col]} == $COMP_SYM ] && [ ${board[$row,$(($col+2))]} == $COMP_SYM ]
+      then
+         if [ ${board[$(($row+1)),$(($col+1))]} != $PLAYER_SYM ]
+         then
+            board[$(($row+1)),$(($col+1))]=$COMP_SYM
+            return
+          fi
+      else
+         return
+      fi
+#------------------------------------------------------------------------------------------------------------------------------------------------>
+}
 
 #main
-
 
 #resetBoard
 assigningSymbol
