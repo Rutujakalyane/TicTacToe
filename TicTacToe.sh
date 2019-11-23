@@ -2,7 +2,7 @@
 
 #Author-Prince Singh
 #Date-20 Nov 2019
-#Purpose-Use case 8 [ Checking winning cells for computer ]
+#Purpose-Use case 9 [ Checking corner cells for computer ]
 
 echo "Welcome to TicTacToe"
 
@@ -297,6 +297,10 @@ function  computerTurn()
             return
           fi
       else
+         if [ true ]
+         then
+            checkCorners
+         else
          while [ true ]
          do
             local row=$(( RANDOM % $NUM_OFROWS ))
@@ -310,6 +314,7 @@ function  computerTurn()
                break
             fi
          done
+         fi
       fi
 }
 
@@ -428,6 +433,28 @@ function checkForCompWin()
       fi
 #------------------------------------------------------------------------------------------------------------------------------------------------>
 }
+
+function checkCorners()
+{
+      if [ ${board[0,0]} != $PLAYER_SYM ] && [ ${board[0,0]} != $COMP_SYM ]
+      then
+         board[0,0]=$COMP_SYM
+         return
+      elif [ ${board[0,2]} != $PLAYER_SYM ] && [ ${board[0,2]} != $COMP_SYM ]
+      then
+         board[0,2]=$COMP_SYM
+         return
+      elif [ ${board[2,0]} != $PLAYER_SYM ] && [ ${board[2,0]} != $COMP_SYM ]
+      then
+         board[2,0]=$COMP_SYM
+         return
+      elif [ ${board[2,2]} != $PLAYER_SYM ] && [ ${board[2,2]} != $COMP_SYM ]
+      then
+         board[2,2]=$COMP_SYM
+         return
+      fi
+}
+
 
 #main
 
