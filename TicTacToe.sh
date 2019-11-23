@@ -2,7 +2,7 @@
 
 #Author-Prince Singh
 #Date-20 Nov 2019
-#Purpose-Use case 9 [ Checking corner cells for computer ]
+#Purpose-Use case 10 [ Checking center cell for computer ]
 
 echo "Welcome to TicTacToe"
 
@@ -18,6 +18,8 @@ LENGTH=$(( $NUM_OFROWS * $NUM_OFCOLUMNS ))
 cell=1
 playerCell=''
 playerTurn=''
+isCenterAvailable=''
+isCornerAvailable=''
 
 declare -A board
 
@@ -140,8 +142,14 @@ function inputToBoard()
             fi
       else
          echo "#### Computer's Turn ######"
-         checkForCompWin
-         computerTurn
+         checkingWinningCellForComputer
+         computerCheckingPlayerWinningCellForBlocking
+         checkCornersAndCenterAvailability
+         if [ $isCornerAvailable == true ] || [ $isCenterAvailable == true ]
+         then
+            $isCornerAvailable=false
+            $isCenterAvailable=false
+         fi
          playerTurn=1
          if [ $(checkWinner $COMP_SYM) -eq 1  ]
          then
@@ -186,7 +194,7 @@ function checkWinner()
    fi
 }
 
-function  computerTurn()
+function  computerCheckingPlayerWinningCellForBlocking()
 {
 #Rows--------------------------------------------------------------------------------------------------------------------------------------------->
 
@@ -295,12 +303,8 @@ function  computerTurn()
          then
             board[$(($row+1)),$(($col+1))]=$COMP_SYM
             return
-          fi
+         fi
       else
-         if [ true ]
-         then
-            checkCorners
-         else
          while [ true ]
          do
             local row=$(( RANDOM % $NUM_OFROWS ))
@@ -314,11 +318,11 @@ function  computerTurn()
                break
             fi
          done
-         fi
       fi
 }
 
-function checkForCompWin()
+
+function checkingWinningCellForComputer()
 {
 #Rows---------------------------------------------------------------------------------------------------------------------------------------------->
 
@@ -434,24 +438,28 @@ function checkForCompWin()
 #------------------------------------------------------------------------------------------------------------------------------------------------>
 }
 
-function checkCorners()
+function checkCornersAndCenterAvailability()
 {
       if [ ${board[0,0]} != $PLAYER_SYM ] && [ ${board[0,0]} != $COMP_SYM ]
       then
          board[0,0]=$COMP_SYM
-         return
+         isCornerAvailable=true
       elif [ ${board[0,2]} != $PLAYER_SYM ] && [ ${board[0,2]} != $COMP_SYM ]
       then
          board[0,2]=$COMP_SYM
-         return
+         isCornerAvailable=true
       elif [ ${board[2,0]} != $PLAYER_SYM ] && [ ${board[2,0]} != $COMP_SYM ]
       then
          board[2,0]=$COMP_SYM
-         return
+         isCornerAvailable=true
       elif [ ${board[2,2]} != $PLAYER_SYM ] && [ ${board[2,2]} != $COMP_SYM ]
       then
          board[2,2]=$COMP_SYM
-         return
+         isCornerAvailable=true
+      elif [ ${board[1,1]} != $PLAYER_SYM ] && [ ${board[1,1]} != $COMP_SYM ]
+      then
+         board[1,1]=$COMP_SYM
+         isCenterAvailable=true
       fi
 }
 
