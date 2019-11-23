@@ -20,6 +20,7 @@ playerCell=''
 playerTurn=''
 isCenterAvailable=''
 isCornerAvailable=''
+cellBlocked=''
 
 declare -A board
 
@@ -143,6 +144,11 @@ function inputToBoard()
       else
          echo "#### Computer's Turn ######"
          checkingWinningCellForComputer
+         if [ $(checkWinner $COMP_SYM) -eq 1  ]
+         then
+            echo "Computer Won"
+            exit 
+         fi
          computerCheckingPlayerWinningCellForBlocking
          checkCornersAndCenterAvailability
          if [ $isCornerAvailable == true ] || [ $isCenterAvailable == true ]
@@ -151,11 +157,6 @@ function inputToBoard()
             $isCenterAvailable=false
          fi
          playerTurn=1
-         if [ $(checkWinner $COMP_SYM) -eq 1  ]
-         then
-            echo "Computer Won"
-            return 0
-         fi
       fi
    done
    echo "Match Tie"
@@ -207,6 +208,7 @@ function  computerCheckingPlayerWinningCellForBlocking()
           if [ ${board[$row,$(($col+2))]} != $COMP_SYM ]
           then
              board[$row,$(($col+2))]=$COMP_SYM
+             cellBlocked=true
              break
           fi
       elif [ ${board[$row,$(($col+1))]} == $PLAYER_SYM ] && [ ${board[$row,$(($col+2))]} == $PLAYER_SYM ]
@@ -214,6 +216,7 @@ function  computerCheckingPlayerWinningCellForBlocking()
           if [ ${board[$row,$col]} != $COMP_SYM ]
           then
              board[$row,$col]=$COMP_SYM
+             cellBlocked=true
              break
           fi
       elif [ ${board[$row,$col]} == $PLAYER_SYM ] && [ ${board[$row,$(($col+2))]} == $PLAYER_SYM ]
@@ -221,6 +224,7 @@ function  computerCheckingPlayerWinningCellForBlocking()
           if [ ${board[$row,$(($col+1))]} != $COMP_SYM ]
           then
              board[$row,$(($col+1))]=$COMP_SYM
+             cellBlocked=true
              break
           fi
       fi
@@ -237,6 +241,7 @@ function  computerCheckingPlayerWinningCellForBlocking()
          if [ ${board[$(($row+2)),$col]} != $COMP_SYM ]
          then
             board[$(($row+2)),$col]=$COMP_SYM
+            cellBlocked=true
             break
          fi
       elif [ ${board[$(($row+1)),$col]} == $PLAYER_SYM ] && [ ${board[$(($row+2)),$col]} == $PLAYER_SYM ]
@@ -244,6 +249,7 @@ function  computerCheckingPlayerWinningCellForBlocking()
          if [ ${board[$row,$col]} != $COMP_SYM ]
          then
             board[$row,$col]=$COMP_SYM
+            cellBlocked=true
             break
           fi
       elif [ ${board[$row,$col]} == $PLAYER_SYM ] && [ ${board[$(($row+2)),$col]} == $PLAYER_SYM ]
@@ -251,6 +257,7 @@ function  computerCheckingPlayerWinningCellForBlocking()
          if [ ${board[$(($row+1)),$col]} != $COMP_SYM ]
          then
             board[$(($row+1)),$col]=$COMP_SYM
+            cellBlocked=true
             break
          fi
       fi
@@ -267,6 +274,7 @@ function  computerCheckingPlayerWinningCellForBlocking()
          if [ ${board[$(($row+2)),$(($col+2))]} != $COMP_SYM ]
          then
             board[$(($row+2)),$(($col+2))]=$COMP_SYM
+            cellBlocked=true
             return
          fi
       elif [ ${board[$(($row+1)),$(($col+1))]} == $PLAYER_SYM ] && [ ${board[$(($row+2)),$(($col+2))]} == $PLAYER_SYM ]
@@ -274,6 +282,7 @@ function  computerCheckingPlayerWinningCellForBlocking()
          if [ ${board[$row,$col]} != $COMP_SYM ]
          then
             board[$row,$col]=$COMP_SYM
+            cellBlocked=true
             return
           fi
       elif [ ${board[$row,$col]} == $PLAYER_SYM ] && [ ${board[$(($row+2)),$(($col+2))]} == $PLAYER_SYM ]
@@ -281,6 +290,7 @@ function  computerCheckingPlayerWinningCellForBlocking()
          if [ ${board[$(($row+1)),$(($col+1))]} != $COMP_SYM ]
          then
             board[$(($row+1)),$(($col+1))]=$COMP_SYM
+            cellBlocked=true
             return
           fi
       elif [ ${board[$(($row+2)),$col]} == $PLAYER_SYM ] &&  [ ${board[$(($row+1)),$(($col+1))]} == $PLAYER_SYM ]
@@ -288,6 +298,7 @@ function  computerCheckingPlayerWinningCellForBlocking()
          if [ ${board[$row,$(($col+2))]} != $COMP_SYM ]
          then
             board[$row,$(($col+2))]=$COMP_SYM
+            cellBlocked=true
             return
           fi
       elif [ ${board[$(($row+1)),$(($col+1))]} == $PLAYER_SYM ] && [ ${board[$row,$(($col+2))]} == $PLAYER_SYM ]
@@ -295,6 +306,7 @@ function  computerCheckingPlayerWinningCellForBlocking()
          if [ ${board[$(($row+2)),$col]} != $COMP_SYM ]
          then
             board[$(($row+2)),$col]=$COMP_SYM
+            cellBlocked=true
             return
           fi
       elif [ ${board[$(($row+2)),$col]} == $PLAYER_SYM ] && [ ${board[$row,$(($col+2))]} == $PLAYER_SYM ]
@@ -302,22 +314,9 @@ function  computerCheckingPlayerWinningCellForBlocking()
          if [ ${board[$(($row+1)),$(($col+1))]} != $COMP_SYM ]
          then
             board[$(($row+1)),$(($col+1))]=$COMP_SYM
+            cellBlocked=true
             return
          fi
-      else
-         while [ true ]
-         do
-            local row=$(( RANDOM % $NUM_OFROWS ))
-            local col=$(( RANDOM % $NUM_OFCOLUMNS ))
-
-            if [ ${board[$row,$col]} == $PLAYER_SYM ] || [ ${board[$row,$col]} == $COMP_SYM ]
-            then
-               continue
-            else
-               board[$row,$col]=$COMP_SYM
-               break
-            fi
-         done
       fi
 }
 
