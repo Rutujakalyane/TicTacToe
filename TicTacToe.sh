@@ -1,8 +1,8 @@
 #!/bin/bash -x
 
 #Author-Prince Singh
-#Date-20 Nov 2019
-#Purpose-Use case 10 [ Checking center cell for computer ]
+#Date-22 Nov 2019
+#Purpose-Use case 11 [ Checking any side cell for computer ]
 
 echo "Welcome to TicTacToe"
 
@@ -20,6 +20,7 @@ playerCell=''
 playerTurn=''
 isCenterAvailable=''
 isCornerAvailable=''
+isSideAvailable=''
 cellBlocked=''
 
 declare -A board
@@ -137,7 +138,7 @@ function inputToBoard()
                   if [ $(checkWinner $PLAYER_SYM) -eq 1  ]
                   then
                      echo "You Won"
-                     return 0
+                     exit
                   fi
                fi
             fi
@@ -150,11 +151,17 @@ function inputToBoard()
             exit 
          fi
          computerCheckingPlayerWinningCellForBlocking
-         checkCornersAndCenterAvailability
-         if [ $isCornerAvailable == true ] || [ $isCenterAvailable == true ]
+         if [[ $cellBlocked == true ]]
          then
-            $isCornerAvailable=false
-            $isCenterAvailable=false
+            cellBlocked=false
+         else
+            checkCornersCenterSidesAvailability
+            if [ $isCornerAvailable == true ] || [ $isCenterAvailable == true ] || [ $isSideAvailable == true ]
+               then
+                  isCornerAvailable=false
+                  isCenterAvailable=false
+                  isSideAvailable=false
+            fi
          fi
          playerTurn=1
       fi
@@ -267,7 +274,6 @@ function  computerCheckingPlayerWinningCellForBlocking()
 
       local row=0
       local col=0
-      local valid=''
 
       if [ ${board[$row,$col]} == $PLAYER_SYM ] &&  [ ${board[$(($row+1)),$(($col+1))]} == $PLAYER_SYM ]
       then
@@ -387,7 +393,6 @@ function checkingWinningCellForComputer()
 
       local row=0
       local col=0
-      local valid=''
 
       if [ ${board[$row,$col]} == $COMP_SYM ] &&  [ ${board[$(($row+1)),$(($col+1))]} == $COMP_SYM ]
       then
@@ -437,7 +442,7 @@ function checkingWinningCellForComputer()
 #------------------------------------------------------------------------------------------------------------------------------------------------>
 }
 
-function checkCornersAndCenterAvailability()
+function checkCornersCenterSidesAvailability()
 {
       if [ ${board[0,0]} != $PLAYER_SYM ] && [ ${board[0,0]} != $COMP_SYM ]
       then
@@ -459,6 +464,22 @@ function checkCornersAndCenterAvailability()
       then
          board[1,1]=$COMP_SYM
          isCenterAvailable=true
+      elif [ ${board[0,1]} != $PLAYER_SYM ] && [ ${board[0,1]} != $COMP_SYM ]
+      then
+         board[0,1]=$COMP_SYM
+         isSideAvailable=true
+      elif [ ${board[1,2]} != $PLAYER_SYM ] && [ ${board[1,2]} != $COMP_SYM ]
+      then
+         board[1,2]=$COMP_SYM
+         isSideAvailable=true
+      elif [ ${board[2,1]} != $PLAYER_SYM ] && [ ${board[2,1]} != $COMP_SYM ]
+      then
+         board[2,1]=$COMP_SYM
+         isSideAvailable=true
+      elif [ ${board[1,0]} != $PLAYER_SYM ] && [ ${board[1,0]} != $COMP_SYM ]
+      then
+         board[1,0]=$COMP_SYM
+         isSideAvailable=true
       fi
 }
 
